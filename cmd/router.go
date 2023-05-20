@@ -20,6 +20,8 @@ func NewRouter() *gin.Engine {
 	router := gin.Default()
 
 	router.GET("/community/page/:id", GetTopicById)
+	router.POST("/community/page/topic", CreateNewTopic)
+	router.POST("/community/page/post", CreateNewPostById)
 
 	return router
 }

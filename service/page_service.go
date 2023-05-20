@@ -15,12 +15,12 @@ type PageInfo struct {
 }
 
 type PageService struct {
-	Repo repository.DataRepo
+	repo repository.DataRepo
 }
 
 func NewPageService(repo repository.DataRepo) PageService {
 	return PageService{
-		Repo: repo,
+		repo: repo,
 	}
 }
 
@@ -33,7 +33,7 @@ func (ps PageService) QueryPageInfo(topicId int64) (*PageInfo, error) {
 
 	go func ()  {
 		defer wg.Done()
-		topic, err := ps.Repo.FindById(topicId)
+		topic, err := ps.repo.FindById(topicId)
 		if err != nil {
 			topicErr = err
 			return
@@ -44,7 +44,7 @@ func (ps PageService) QueryPageInfo(topicId int64) (*PageInfo, error) {
 
 	go func ()  {
 		defer wg.Done()
-		posts, err := ps.Repo.FindByParentId(topicId)
+		posts, err := ps.repo.FindByParentId(topicId)
 		if err != nil {
 			postsErr = err
 			return
@@ -60,4 +60,13 @@ func (ps PageService) QueryPageInfo(topicId int64) (*PageInfo, error) {
 	}
 
 	return &pageInfo, nil
+}
+
+func (ps PageService) AddNewPost(topicId int64, post repository.Post) error {
+	err := ps.repo.NewPost(topicId, post)
+	if err != nil {
+		return err
+	}
+	
+	return nil
 }

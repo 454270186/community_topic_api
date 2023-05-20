@@ -6,10 +6,10 @@ import (
 )
 
 type Post struct {
-	Id         int64  `json:"id"`
-	ParentId   int64  `json:"parent_id"`
-	Content    string `json:"content"`
-	CreateTime time.Time  `json:"create_time"`
+	Id         int64     `gorm:"primaryKey"`
+	ParentId   int64     `gorm:"column:parent_id"`
+	Content    string    `gorm:"column:content"`
+	CreateTime time.Time `gorm:"column:create_time"`
 }
 
 type PostDao struct {
