@@ -2,6 +2,7 @@ package repository
 
 import (
 	"bufio"
+	"errors"
 	"log"
 	"os"
 
@@ -31,7 +32,7 @@ func InitIndexMap(filepath string) error {
 func initTopicIndexMap(filepath string) error {
 	open, err := os.Open(filepath + "topic.txt")
 	if err != nil {
-		return err
+		return errors.New("error while open file")
 	}
 
 	scanner := bufio.NewScanner(open)
@@ -54,7 +55,7 @@ func initTopicIndexMap(filepath string) error {
 func initPostIndexMap(filepath string) error {
 	open, err := os.Open(filepath + "post.txt")
 	if err != nil {
-		return err
+		return errors.New("error while open file")
 	}
 
 	scanner := bufio.NewScanner(open)

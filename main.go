@@ -1,9 +1,6 @@
 package main
 
 import (
-	"log"
-	"os"
-
 	"github.com/454270186/CommuTopicPage/controller"
 	"github.com/454270186/CommuTopicPage/repository"
 	"github.com/gin-gonic/gin"
@@ -11,8 +8,7 @@ import (
 
 func main() {
 	if err := repository.InitIndexMap("./data/"); err != nil {
-		log.Println(err)
-		os.Exit(-1);
+		panic(err)
 	}
 
 	router := gin.Default()
