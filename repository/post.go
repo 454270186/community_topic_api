@@ -1,12 +1,15 @@
 package repository
 
-import "sync"
+import (
+	"sync"
+	"time"
+)
 
 type Post struct {
 	Id         int64  `json:"id"`
 	ParentId   int64  `json:"parent_id"`
 	Content    string `json:"content"`
-	CreateTime int64  `json:"create_time"`
+	CreateTime time.Time  `json:"create_time"`
 }
 
 type PostDao struct {

@@ -12,7 +12,17 @@ type PageData struct {
 	Data interface{} `json:"data"`
 }
 
-func QueryPageInfo(topicIdStr string) *PageData {
+type Controller struct {
+	pageService service.PageService
+}
+
+func NewController(ps service.PageService) Controller {
+	return Controller{
+		pageService: ps,
+	}
+}
+
+func (ctrl Controller) QueryPageInfo(topicIdStr string) *PageData {
 	topicId, err := strconv.ParseInt(topicIdStr, 10, 64)
 	if err != nil {
 		return &PageData{
@@ -21,7 +31,7 @@ func QueryPageInfo(topicIdStr string) *PageData {
 		}
 	}
 
-	pageInfo, err := service.QueryPageInfo(topicId)
+	pageInfo, err := ctrl.pageService.QueryPageInfo(topicId)
 	if err != nil {
 		return &PageData{
 			Code: -1,

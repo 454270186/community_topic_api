@@ -1,12 +1,15 @@
 package repository
 
-import "sync"
+import (
+	"sync"
+	"time"
+)
 
 type Topic struct {
 	Id         int64  `json:"id"`
 	Title      string `json:"title"`
 	Content    string `json:"content"`
-	CreateTime int64  `json:"create_time"`
+	CreateTime time.Time  `json:"create_time"`
 }
 
 type TopicDao struct {
