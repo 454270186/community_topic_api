@@ -110,3 +110,26 @@ func (ctrl Controller) AddNewPost(post dto.NewPostReq) *PageData {
 		Data: gin.H{"new_post_id": newPostId},
 	}
 }
+
+func (ctrl Controller) DeleteTopic(idStr string) *PageData {
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return &PageData{
+			Code: -1,
+			Msg: err.Error(),
+		}
+	}
+
+	err = ctrl.pageService.DeleteTopic(id)
+	if err != nil {
+		return &PageData{
+			Code: -1,
+			Msg: err.Error(),
+		}
+	}
+
+	return &PageData{
+		Code: 0,
+		Msg: "delete topic successfully",
+	}
+}

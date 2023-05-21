@@ -80,3 +80,12 @@ func (ps PageService) AddNewPost(post repository.Post) (int64, error) {
 	
 	return postId, nil
 }
+
+func (ps PageService) DeleteTopic(id int64) error {
+	err := ps.repo.DelTopic(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

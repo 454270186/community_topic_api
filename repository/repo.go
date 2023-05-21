@@ -12,6 +12,8 @@ type DataRepo interface {
 	FindByParentId(parentId int64) ([]*Post, error)
 	NewPost(post Post) (int64, error)
 	NewTopic(topic Topic) (int64, error)
+	DelTopic(id int64) error
+	DelPost(id int64) error
 }
 
 func NewDataRepo(db *gorm.DB) DataRepo {
@@ -80,4 +82,22 @@ func (p DataRepoDB) NewPost(post Post) (int64, error) {
 	}
 
 	return post.Id, nil
+}
+
+func (p DataRepoDB) DelTopic(id int64) error {
+	result := p.DB.Delete(&Topic{}, id)
+	if result.Error != nil {
+		log.Println(result.Error.Error())
+		return errors.New("unexpect database error")
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("topic id does not exist")
+	}
+
+	return nil
+}
+
+func (p DataRepoDB) DelPost(id int64) error {
+	return nil
 }

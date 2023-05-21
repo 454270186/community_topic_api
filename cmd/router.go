@@ -24,8 +24,8 @@ func NewRouter() *gin.Engine {
 		comPage.GET("/:id", GetTopicById)
 		comPage.POST("/topic", CreateNewTopic)
 		comPage.POST("/post", CreateNewPostById)
-		comPage.DELETE("/topic", DeleteTopicById) // TODO
-		comPage.DELETE("/post", DeletePostById)                   // TODO
+		comPage.DELETE("/topic/:id", DeleteTopicById)
+		comPage.DELETE("/post/:id", DeletePostById) // TODO
 	}
 
 	return router
