@@ -39,3 +39,11 @@ func CreateNewPostById(c *gin.Context) {
 	data := ctrl.AddNewPost(newPost)
 	c.JSON(http.StatusOK, data)
 }
+
+func DeleteTopicById(c *gin.Context) {
+	
+}
+
+func DeletePostById(c *gin.Context) {
+	
+}

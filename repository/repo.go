@@ -10,7 +10,7 @@ import (
 type DataRepo interface {
 	FindById(id int64) (*Topic, error)
 	FindByParentId(parentId int64) ([]*Post, error)
-	NewPost(post Post) error
+	NewPost(post Post) (int64, error)
 	NewTopic(topic Topic) (int64, error)
 }
 
@@ -28,6 +28,10 @@ type DataRepoDB struct {
 func (p DataRepoDB) FindById(id int64) (*Topic, error) {
 	var topic Topic
 	if err := p.DB.First(&topic, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("topic not found")
+		}
+
 		log.Println("Error while find topic by id")
 		return nil, err
 	}
@@ -59,21 +63,21 @@ func (p DataRepoDB) NewTopic(topic Topic) (int64, error) {
 }
 
 // Create new post by parent id
-func (p DataRepoDB) NewPost(post Post) error {
+func (p DataRepoDB) NewPost(post Post) (int64, error) {
 	var cnt int64
 	result := p.DB.Model(&Topic{}).Where("id = ?", post.ParentId).Count(&cnt)
 	if result.Error != nil {
 		log.Println("Error while check topic id")
-		return errors.New("unexpect database error")
+		return 0, errors.New("unexpect database error")
 	} else if cnt == 0 {
-		return errors.New("topic id does not exist")
+		return 0, errors.New("topic id does not exist")
 	}
 
 	result = p.DB.Create(&post)
 	if result.Error != nil {
 		log.Println("Error while insert a new post")
-		return errors.New("unexpect database error")
+		return 0, errors.New("unexpect database error")
 	}
 
-	return nil
+	return post.Id, nil
 }

@@ -96,7 +96,8 @@ func (ctrl Controller) AddNewPost(post dto.NewPostReq) *PageData {
 		CreateTime: time.Now(),
 	}
 
-	if err := ctrl.pageService.AddNewPost(newPost); err != nil {
+	newPostId, err := ctrl.pageService.AddNewPost(newPost)
+	if err != nil {
 		return &PageData{
 			Code: -1,
 			Msg: err.Error(),
@@ -106,5 +107,6 @@ func (ctrl Controller) AddNewPost(post dto.NewPostReq) *PageData {
 	return &PageData{
 		Code: 0,
 		Msg: "success",
+		Data: gin.H{"new_post_id": newPostId},
 	}
 }

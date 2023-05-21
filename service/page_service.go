@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"sync"
 
 	"github.com/454270186/CommuTopicPage/repository"
@@ -55,8 +54,10 @@ func (ps PageService) QueryPageInfo(topicId int64) (*PageInfo, error) {
 
 	wg.Wait()
 
-	if topicErr != nil || postsErr != nil {
-		return nil, errors.New("error while get page info")
+	if topicErr != nil {
+		return nil, topicErr
+	} else if postsErr != nil {
+		return nil, postsErr
 	}
 
 	return &pageInfo, nil
@@ -71,11 +72,11 @@ func (ps PageService) AddNewTopic(topic repository.Topic) (int64, error) {
 	return newTopicId, nil
 }
 
-func (ps PageService) AddNewPost(post repository.Post) error {
-	err := ps.repo.NewPost(post)
+func (ps PageService) AddNewPost(post repository.Post) (int64, error) {
+	postId, err := ps.repo.NewPost(post)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	
-	return nil
+	return postId, nil
 }

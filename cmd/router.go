@@ -19,9 +19,14 @@ func NewRouter() *gin.Engine {
 	ctrl = controller.NewController(service.NewPageService(repository.NewDataRepo(db)))
 	router := gin.Default()
 
-	router.GET("/community/page/:id", GetTopicById)
-	router.POST("/community/page/topic", CreateNewTopic)
-	router.POST("/community/page/post", CreateNewPostById)
+	comPage := router.Group("/community/page")
+	{
+		comPage.GET("/:id", GetTopicById)
+		comPage.POST("/topic", CreateNewTopic)
+		comPage.POST("/post", CreateNewPostById)
+		comPage.DELETE("/topic", DeleteTopicById) // TODO
+		comPage.DELETE("/post", DeletePostById)                   // TODO
+	}
 
 	return router
 }
