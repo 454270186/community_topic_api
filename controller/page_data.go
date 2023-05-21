@@ -7,6 +7,7 @@ import (
 	"github.com/454270186/CommuTopicPage/dto"
 	"github.com/454270186/CommuTopicPage/repository"
 	"github.com/454270186/CommuTopicPage/service"
+	"github.com/gin-gonic/gin"
 )
 
 type PageData struct {
@@ -49,6 +50,38 @@ func (ctrl Controller) QueryPageInfo(topicIdStr string) *PageData {
 	}
 }
 
+func (ctrl Controller) AddNewTopic(topic dto.NewTopicReq) *PageData {
+	if len(topic.Title) == 0 || len(topic.Content) == 0 {
+		return &PageData{
+			Code: -1,
+			Msg: "title and content can't be empty",
+		}
+	}
+
+	newTopic := repository.Topic{
+		Title: topic.Title,
+		Content: topic.Content,
+		CreateTime: time.Now(),
+	}
+
+	newTopicId, err := ctrl.pageService.AddNewTopic(newTopic)
+	if err != nil {
+		return &PageData{
+			Code: -1,
+			Msg: err.Error(),
+		}
+	}
+	
+
+	return &PageData{
+		Code: 0,
+		Msg: "success",
+		Data: gin.H{
+			"new_topic_id": newTopicId,
+		},
+	}
+}
+
 func (ctrl Controller) AddNewPost(post dto.NewPostReq) *PageData {
 	if len(post.Content) == 0 {
 		return &PageData{
@@ -63,7 +96,7 @@ func (ctrl Controller) AddNewPost(post dto.NewPostReq) *PageData {
 		CreateTime: time.Now(),
 	}
 
-	if err := ctrl.pageService.AddNewPost(post.TopicId, newPost); err != nil {
+	if err := ctrl.pageService.AddNewPost(newPost); err != nil {
 		return &PageData{
 			Code: -1,
 			Msg: err.Error(),

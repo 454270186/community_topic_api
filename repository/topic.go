@@ -6,10 +6,10 @@ import (
 )
 
 type Topic struct {
-	Id         int64  `json:"id"`
-	Title      string `json:"title"`
-	Content    string `json:"content"`
-	CreateTime time.Time  `json:"create_time"`
+	Id         int64     `gorm:"primaryKey"`
+	Title      string    `gorm:"column:title"`
+	Content    string    `gorm:"column:content"`
+	CreateTime time.Time `gorm:"column:create_time"`
 }
 
 type TopicDao struct {
@@ -32,7 +32,3 @@ func NewTopicDaoInstance() *TopicDao {
 func (*TopicDao) QueryById(id int64) *Topic {
 	return topicIndexMap[id]
 }
-
-
-
-

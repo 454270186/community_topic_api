@@ -62,8 +62,17 @@ func (ps PageService) QueryPageInfo(topicId int64) (*PageInfo, error) {
 	return &pageInfo, nil
 }
 
-func (ps PageService) AddNewPost(topicId int64, post repository.Post) error {
-	err := ps.repo.NewPost(topicId, post)
+func (ps PageService) AddNewTopic(topic repository.Topic) (int64, error) {
+	newTopicId, err := ps.repo.NewTopic(topic)
+	if err != nil {
+		return 0, err
+	}
+
+	return newTopicId, nil
+}
+
+func (ps PageService) AddNewPost(post repository.Post) error {
+	err := ps.repo.NewPost(post)
 	if err != nil {
 		return err
 	}

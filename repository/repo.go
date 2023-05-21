@@ -10,7 +10,8 @@ import (
 type DataRepo interface {
 	FindById(id int64) (*Topic, error)
 	FindByParentId(parentId int64) ([]*Post, error)
-	NewPost(parentId int64, post Post) error
+	NewPost(post Post) error
+	NewTopic(topic Topic) (int64, error)
 }
 
 func NewDataRepo(db *gorm.DB) DataRepo {
@@ -45,9 +46,20 @@ func (p DataRepoDB) FindByParentId(parentId int64) ([]*Post, error) {
 	return posts, nil
 }
 
+// create new topic
+func (p DataRepoDB) NewTopic(topic Topic) (int64, error) {
+	topic.Id = 0
+	result := p.DB.Create(&topic)
+	if result.Error != nil {
+		log.Println("Error while insert a new topic")
+		return 0, errors.New("unexpect database error")
+	}
+
+	return topic.Id, nil
+}
+
 // Create new post by parent id
-func (p DataRepoDB) NewPost(parentId int64, post Post) error {
-	post.Id = 0
+func (p DataRepoDB) NewPost(post Post) error {
 	result := p.DB.Create(&post)
 	if result.Error != nil {
 		log.Println("Error while insert a new post")

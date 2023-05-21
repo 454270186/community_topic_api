@@ -18,7 +18,14 @@ func GetTopicById(c *gin.Context) {
 }
 
 func CreateNewTopic(c *gin.Context) {
+	var newTopic dto.NewTopicReq
+	if err := c.ShouldBind(&newTopic); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
 
+	data := ctrl.AddNewTopic(newTopic)
+	c.JSON(http.StatusOK, data)
 }
 
 func CreateNewPostById(c *gin.Context) {
