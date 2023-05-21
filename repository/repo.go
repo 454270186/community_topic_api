@@ -60,7 +60,16 @@ func (p DataRepoDB) NewTopic(topic Topic) (int64, error) {
 
 // Create new post by parent id
 func (p DataRepoDB) NewPost(post Post) error {
-	result := p.DB.Create(&post)
+	var cnt int64
+	result := p.DB.Model(&Topic{}).Where("id = ?", post.ParentId).Count(&cnt)
+	if result.Error != nil {
+		log.Println("Error while check topic id")
+		return errors.New("unexpect database error")
+	} else if cnt == 0 {
+		return errors.New("topic id does not exist")
+	}
+
+	result = p.DB.Create(&post)
 	if result.Error != nil {
 		log.Println("Error while insert a new post")
 		return errors.New("unexpect database error")
