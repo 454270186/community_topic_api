@@ -5,5 +5,11 @@
         "password": "",
         "dbname": "",
         "port": 5432
+    },
+
+    "redis": {
+        "addr": "localhost:6379",
+        "password": "",
+        "DB": 0
     }
 }

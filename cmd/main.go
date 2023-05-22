@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/454270186/CommuTopicPage/config"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -11,6 +12,7 @@ import (
 
 var dbConfig config.Config
 var db *gorm.DB
+var rdb *redis.Client
 
 func init() {
 	v := viper.New()
@@ -23,13 +25,22 @@ func init() {
 		panic(err)
 	}
 
+	// connect to postgres
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d", 
-					   dbConfig.Host, dbConfig.User, dbConfig.Password, dbConfig.DBname, dbConfig.Port)
+					   dbConfig.Host, dbConfig.User, dbConfig.PPassword, dbConfig.DBname, dbConfig.Port)
 	var err error
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
+
+	// connect to redis
+	rdb = redis.NewClient(&redis.Options{
+		Addr: dbConfig.Addr,
+		Password: dbConfig.RPassword,
+		DB: dbConfig.DB,
+	})
+	fmt.Println(rdb)
 }
 
 func main() {
