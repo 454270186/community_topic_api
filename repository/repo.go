@@ -13,7 +13,7 @@ type DataRepo interface {
 	NewPost(post Post) (int64, error)
 	NewTopic(topic Topic) (int64, error)
 	DelTopic(id int64) error
-	DelPost(id int64) error
+	DelPost(id int64) (int64, error)
 }
 
 func NewDataRepo(db *gorm.DB) DataRepo {
@@ -90,7 +90,6 @@ func (p DataRepoDB) DelTopic(id int64) error {
 		log.Println(result.Error.Error())
 		return errors.New("unexpect database error")
 	}
-
 	if result.RowsAffected == 0 {
 		return errors.New("topic id does not exist")
 	}
@@ -98,16 +97,23 @@ func (p DataRepoDB) DelTopic(id int64) error {
 	return nil
 }
 
-func (p DataRepoDB) DelPost(id int64) error {
-	result := p.DB.Delete(&Post{}, id)
+func (p DataRepoDB) DelPost(id int64) (int64, error) {
+	var post Post
+	err := p.DB.First(&post, id).Error
+	if err != nil {
+		return 0, errors.New("post id does not exist")
+	}
+
+	parentId := post.ParentId
+
+	result := p.DB.Delete(&post)
 	if result.Error != nil {
 		log.Println(result.Error.Error())
-		return errors.New("unexpect database error")
+		return 0, errors.New("unexpect database error")
 	}
-
 	if result.RowsAffected == 0 {
-		return errors.New("post id does not exist")
+		return 0, errors.New("post id does not exist")
 	}
 
-	return nil
+	return parentId, nil
 }

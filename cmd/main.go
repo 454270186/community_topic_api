@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/454270186/CommuTopicPage/config"
@@ -40,7 +41,9 @@ func init() {
 		Password: dbConfig.RPassword,
 		DB: dbConfig.DB,
 	})
-	fmt.Println(rdb)
+	if err := rdb.FlushAll(context.Background()).Err(); err != nil {
+		panic(err)
+	}
 }
 
 func main() {

@@ -8,7 +8,7 @@ import (
 )
 
 func NewRouter() *gin.Engine {
-	ctrl = controller.NewController(service.NewPageService(repository.NewDataRepo(db)))
+	ctrl = controller.NewController(service.NewPageService(repository.NewDataRepo(db), rdb))
 	router := gin.Default()
 
 	comPage := router.Group("/community/page")
