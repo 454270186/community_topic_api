@@ -25,3 +25,5 @@
         "content": <post content>
     }
     ```
+- DELETE ```/community/page/topic/:id``` 删除指定topic
+- DELETE ```/community/page/post/:id``` 删除指定post
