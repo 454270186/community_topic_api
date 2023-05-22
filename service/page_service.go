@@ -89,3 +89,12 @@ func (ps PageService) DeleteTopic(id int64) error {
 
 	return nil
 }
+
+func (ps PageService) DeletePost(id int64) error {
+	err := ps.repo.DelPost(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

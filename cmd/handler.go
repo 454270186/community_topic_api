@@ -48,5 +48,8 @@ func DeleteTopicById(c *gin.Context) {
 }
 
 func DeletePostById(c *gin.Context) {
+	postId := c.Param("id")
 
+	data := ctrl.DeletePost(postId)
+	c.JSON(200, data)
 }

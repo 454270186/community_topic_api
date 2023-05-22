@@ -99,5 +99,15 @@ func (p DataRepoDB) DelTopic(id int64) error {
 }
 
 func (p DataRepoDB) DelPost(id int64) error {
+	result := p.DB.Delete(&Post{}, id)
+	if result.Error != nil {
+		log.Println(result.Error.Error())
+		return errors.New("unexpect database error")
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("post id does not exist")
+	}
+
 	return nil
 }

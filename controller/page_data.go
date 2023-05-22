@@ -133,3 +133,26 @@ func (ctrl Controller) DeleteTopic(idStr string) *PageData {
 		Msg: "delete topic successfully",
 	}
 }
+
+func (ctrl Controller) DeletePost(idStr string) *PageData {
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return &PageData{
+			Code: -1,
+			Msg: err.Error(),
+		}
+	}
+
+	err = ctrl.pageService.DeletePost(id)
+	if err != nil {
+		return &PageData{
+			Code: -1,
+			Msg: err.Error(),
+		}
+	}
+
+	return &PageData{
+		Code: 0,
+		Msg: "delete post successfully",
+	}
+}
