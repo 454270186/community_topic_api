@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.9.0
-	github.com/goccy/go-json v0.10.2
+	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/redis/go-redis/v9 v9.0.4
 	gorm.io/driver/postgres v1.5.2
 	gorm.io/gorm v1.25.1

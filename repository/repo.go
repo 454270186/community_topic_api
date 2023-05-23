@@ -7,21 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type DataRepo interface {
-	FindById(id int64) (*Topic, error)
-	FindByParentId(parentId int64) ([]*Post, error)
-	NewPost(post Post) (int64, error)
-	NewTopic(topic Topic) (int64, error)
-	DelTopic(id int64) error
-	DelPost(id int64) (int64, error)
-}
-
-func NewDataRepo(db *gorm.DB) DataRepo {
-	return DataRepoDB{
-		DB: db,
-	}
-}
-
 type DataRepoDB struct {
 	DB *gorm.DB
 }
@@ -116,4 +101,32 @@ func (p DataRepoDB) DelPost(id int64) (int64, error) {
 	}
 
 	return parentId, nil
+}
+
+func (p DataRepoDB) AddPostLike(id int64) (int64, int64, error) {
+	var curLikeCnt int64
+	var topicId int64
+	err := p.DB.Transaction(func(tx *gorm.DB) error {
+		var post Post
+		err := p.DB.First(&post, id).Error
+		if err != nil {
+			return err
+		}
+
+		post.LikeCnt++
+		curLikeCnt = post.LikeCnt
+		topicId = post.ParentId
+
+		if err := p.DB.Model(&post).Update("like_count", post.LikeCnt).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		log.Println("Error while add post likes")
+		return -1, -1, errors.New("unexpect database error")
+	}
+
+	return curLikeCnt, topicId, nil
 }

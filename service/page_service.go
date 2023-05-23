@@ -133,6 +133,12 @@ func (ps PageService) AddNewPost(post repository.Post) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
+
+	key := fmt.Sprintf("post:%d", post.ParentId)
+	_, err = ps.rdb.Del(context.Background(), key).Result()
+	if err != nil {
+		return 0, err
+	}
 	
 	return postId, nil
 }
@@ -166,4 +172,25 @@ func (ps PageService) DeletePost(id int64) error {
 	}
 
 	return nil
+}
+
+// return current post likes count after update
+func (ps PageService) AddPostLike(postId int64) (int64, error) {
+	curLikeCnt, topicId, err := ps.repo.AddPostLike(postId)
+	if err != nil {
+		return -1, err
+	}
+
+	// add in Redis sorted
+	// key => post:[topicId]:like
+	key := fmt.Sprintf("post:%d:like:", topicId)
+	member := postId
+	score := curLikeCnt
+
+	err = ps.rdb.ZAdd(context.Background(), key, redis.Z{Score: float64(score), Member: member}).Err()
+	if err != nil {
+		return -1, err
+	}
+
+	return curLikeCnt, err
 }

@@ -156,3 +156,27 @@ func (ctrl Controller) DeletePost(idStr string) *PageData {
 		Msg: "delete post successfully",
 	}
 }
+
+func (ctrl Controller) AddPostLike(postIdStr string) *PageData {
+	postId, err := strconv.ParseInt(postIdStr, 10, 64)
+	if err != nil {
+		return &PageData{
+			Code: -1,
+			Msg: err.Error(),
+		}
+	}
+
+	curLikeCnt, err := ctrl.pageService.AddPostLike(postId)
+	if err != nil {
+		return &PageData{
+			Code: -1,
+			Msg: err.Error(),
+		}
+	}
+
+	return &PageData{
+		Code: 0,
+		Msg: "add like successfully",
+		Data: gin.H{"current_likes": curLikeCnt},
+	}
+}

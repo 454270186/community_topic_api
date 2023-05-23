@@ -53,3 +53,10 @@ func DeletePostById(c *gin.Context) {
 	data := ctrl.DeletePost(postId)
 	c.JSON(200, data)
 }
+
+func AddPostLikeCnt(c *gin.Context) {
+	postId := c.Param("postid")
+
+	data := ctrl.AddPostLike(postId)
+	c.JSON(200, data)
+}

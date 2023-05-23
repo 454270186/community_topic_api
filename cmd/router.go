@@ -18,6 +18,8 @@ func NewRouter() *gin.Engine {
 		comPage.POST("/post", CreateNewPostById)
 		comPage.DELETE("/topic/:id", DeleteTopicById)
 		comPage.DELETE("/post/:id", DeletePostById)
+		
+		comPage.PUT("/post/:postid/like", AddPostLikeCnt)
 	}
 
 	return router

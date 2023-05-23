@@ -21,7 +21,7 @@ func init() {
 		panic(err)
 	}
 
-	// connect to postgres
+	// connect to Postgres
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d",
 		dbConfig.Host, dbConfig.User, dbConfig.PPassword, dbConfig.DBname, dbConfig.Port)
 	var err error
@@ -30,7 +30,7 @@ func init() {
 		panic(err)
 	}
 
-	// connect to redis
+	// connect to Redis
 	rdb = redis.NewClient(&redis.Options{
 		Addr:     dbConfig.Addr,
 		Password: dbConfig.RPassword,
