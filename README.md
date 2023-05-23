@@ -29,4 +29,4 @@
 - DELETE ```/community/page/post/:id``` 删除指定post
 
 - PUT ```/post/:postid/like``` 点赞指定post
-- GET ```"/post/:topicid/like``` 获取指定topic下的所有post(按点赞数降序排列)
+- GET ```/post/:topicid/like``` 获取指定topic下的所有post(按点赞数降序排列)
