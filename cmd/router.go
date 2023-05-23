@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/454270186/CommuTopicPage/controller"
+	"github.com/454270186/CommuTopicPage/middleware"
 	"github.com/454270186/CommuTopicPage/repository"
 	"github.com/454270186/CommuTopicPage/service"
 	"github.com/gin-gonic/gin"
@@ -10,6 +11,12 @@ import (
 func NewRouter() *gin.Engine {
 	ctrl = controller.NewController(service.NewPageService(repository.NewDataRepo(db), rdb))
 	router := gin.Default()
+
+	router.Use(middleware.LimitMid(10))
+
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.JSON(200, "hello")
+	})
 
 	comPage := router.Group("/community/page")
 	{
