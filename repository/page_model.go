@@ -7,18 +7,18 @@ import (
 )
 
 type Topic struct {
-	Id         int64     `gorm:"primaryKey"`
-	Title      string    `gorm:"column:title"`
-	Content    string    `gorm:"column:content"`
-	CreateTime time.Time `gorm:"column:create_time"`
+	Id         int64     `gorm:"primaryKey" json:"id"`
+	Title      string    `gorm:"column:title" json:"title"`
+	Content    string    `gorm:"column:content" json:"content"`
+	CreateTime time.Time `gorm:"column:create_time" json:"create_time"`
 }
 
 type Post struct {
-	Id         int64     `gorm:"primaryKey"`
-	ParentId   int64     `gorm:"column:parent_id"`
-	Content    string    `gorm:"column:content"`
-	CreateTime time.Time `gorm:"column:create_time"`
-	LikeCnt    int64     `gorm:"column:like_count"`
+	Id         int64     `gorm:"primaryKey" json:"id"`
+	ParentId   int64     `gorm:"column:parent_id" json:"parent_id"`
+	Content    string    `gorm:"column:content" json:"content"`
+	CreateTime time.Time `gorm:"column:create_time" json:"create_time"`
+	LikeCnt    int64     `gorm:"column:like_count" json:"like_count"`
 }
 
 type DataRepo interface {
