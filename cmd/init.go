@@ -1,7 +1,7 @@
 package main
 
 import (
-	"context"
+	// "context"
 	"fmt"
 
 	"github.com/redis/go-redis/v9"
@@ -36,7 +36,7 @@ func init() {
 		Password: dbConfig.RPassword,
 		DB:       dbConfig.DB,
 	})
-	if err := rdb.FlushAll(context.Background()).Err(); err != nil {
-		panic(err)
-	}
+	// if err := rdb.FlushAll(context.Background()).Err(); err != nil {
+	// 	panic(err)
+	// }
 }

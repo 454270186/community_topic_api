@@ -180,3 +180,27 @@ func (ctrl Controller) AddPostLike(postIdStr string) *PageData {
 		Data: gin.H{"current_likes": curLikeCnt},
 	}
 }
+
+func (ctrl Controller) GetPostByLike(topicIdStr string) *PageData {
+	topicId, err := strconv.ParseInt(topicIdStr, 10, 64)
+	if err != nil {
+		return &PageData{
+			Code: -1,
+			Msg: err.Error(),
+		}
+	}
+
+	postLists, err := ctrl.pageService.GetPostByLike(topicId)
+	if err != nil {
+		return &PageData{
+			Code: -1,
+			Msg: err.Error(),
+		}
+	}
+
+	return &PageData{
+		Code: 0,
+		Msg: "success",
+		Data: postLists,
+	}
+}

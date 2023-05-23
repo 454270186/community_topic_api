@@ -60,3 +60,10 @@ func AddPostLikeCnt(c *gin.Context) {
 	data := ctrl.AddPostLike(postId)
 	c.JSON(200, data)
 }
+
+func GetPostByLike(c *gin.Context) {
+	topicId := c.Param("topicid")
+
+	data := ctrl.GetPostByLike(topicId)
+	c.JSON(200, data)
+}

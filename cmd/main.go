@@ -11,6 +11,8 @@ var db *gorm.DB
 var rdb *redis.Client
 
 func main() {
+	defer rdb.Close()
+
 	r := NewRouter()
 
 	r.Run()

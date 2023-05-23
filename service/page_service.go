@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"sync"
 
 	"github.com/454270186/CommuTopicPage/repository"
@@ -129,7 +130,7 @@ func (ps PageService) AddNewTopic(topic repository.Topic) (int64, error) {
 }
 
 func (ps PageService) AddNewPost(post repository.Post) (int64, error) {
-	postId, err := ps.repo.NewPost(post)
+	newPost, err := ps.repo.NewPost(post)
 	if err != nil {
 		return 0, err
 	}
@@ -139,8 +140,17 @@ func (ps PageService) AddNewPost(post repository.Post) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
+
+	// add to redis like sort
+	likeKey := fmt.Sprintf("post:%d:like:", post.ParentId)
+	member := newPost.Id
+	score := 0
+	err = ps.rdb.ZAdd(context.Background(), likeKey, redis.Z{Score: float64(score), Member: member}).Err()
+	if err != nil {
+		return 0, err
+	}
 	
-	return postId, nil
+	return newPost.Id, nil
 }
 
 func (ps PageService) DeleteTopic(id int64) error {
@@ -165,8 +175,15 @@ func (ps PageService) DeletePost(id int64) error {
 	}
 
 	key := fmt.Sprintf("post:%d", delPostParentID)
-	fmt.Println(key)
 	_, err = ps.rdb.Del(context.Background(), key).Result()
+	if err != nil {
+		return err
+	}
+
+	// del postid in redis like list
+	likeKey := fmt.Sprintf("post:%d:like:", delPostParentID)
+	member := id
+	err = ps.rdb.ZRem(context.Background(), likeKey, member).Err()
 	if err != nil {
 		return err
 	}
@@ -193,4 +210,26 @@ func (ps PageService) AddPostLike(postId int64) (int64, error) {
 	}
 
 	return curLikeCnt, err
+}
+
+func (ps PageService) GetPostByLike(topicId int64) ([]*repository.Post, error) {
+	key := fmt.Sprintf("post:%d:like:", topicId)
+
+	result, err := ps.rdb.ZRevRange(context.Background(), key, 0, -1).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	var postLists []*repository.Post
+	for _, member := range result {
+		postId, _ := strconv.ParseInt(member, 10, 64)
+		post, err := ps.repo.FindPostById(postId)
+		if err != nil {
+			return nil, err
+		}
+
+		postLists = append(postLists, post)
+	}
+
+	return postLists, nil
 }

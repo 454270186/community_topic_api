@@ -26,6 +26,18 @@ func (p DataRepoDB) FindById(id int64) (*Topic, error) {
 	return &topic, nil
 }
 
+// find post by id
+func (p DataRepoDB) FindPostById(id int64) (*Post, error) {
+	var post Post
+	err := p.DB.First(&post, id).Error
+	if err != nil {
+		log.Println("Error while find post by id")
+		return nil, errors.New("unexpect database error")
+	}
+
+	return &post, nil
+}
+
 // find post by parent id
 func (p DataRepoDB) FindByParentId(parentId int64) ([]*Post, error) {
 	var posts []*Post
@@ -50,23 +62,23 @@ func (p DataRepoDB) NewTopic(topic Topic) (int64, error) {
 }
 
 // Create new post by parent id
-func (p DataRepoDB) NewPost(post Post) (int64, error) {
+func (p DataRepoDB) NewPost(post Post) (*Post, error) {
 	var cnt int64
 	result := p.DB.Model(&Topic{}).Where("id = ?", post.ParentId).Count(&cnt)
 	if result.Error != nil {
 		log.Println("Error while check topic id")
-		return 0, errors.New("unexpect database error")
+		return nil, errors.New("unexpect database error")
 	} else if cnt == 0 {
-		return 0, errors.New("topic id does not exist")
+		return nil, errors.New("topic id does not exist")
 	}
 
 	result = p.DB.Create(&post)
 	if result.Error != nil {
 		log.Println("Error while insert a new post")
-		return 0, errors.New("unexpect database error")
+		return nil, errors.New("unexpect database error")
 	}
 
-	return post.Id, nil
+	return &post, nil
 }
 
 func (p DataRepoDB) DelTopic(id int64) error {

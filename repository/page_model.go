@@ -23,8 +23,9 @@ type Post struct {
 
 type DataRepo interface {
 	FindById(id int64) (*Topic, error)
+	FindPostById(id int64) (*Post, error)
 	FindByParentId(parentId int64) ([]*Post, error)
-	NewPost(post Post) (int64, error)
+	NewPost(post Post) (*Post, error)
 	NewTopic(topic Topic) (int64, error)
 	DelTopic(id int64) error
 	DelPost(id int64) (int64, error)
