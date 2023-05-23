@@ -2,7 +2,6 @@
 
 #### Based on
 - Gin
-- 分层架构
 - Redis
 - PostgreSQL
 - GORM
