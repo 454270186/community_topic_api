@@ -21,7 +21,6 @@ func (tb *TokenBucket) Allow() bool {
 
 	now := time.Now()
 	tb.TokenCnt = tb.TokenCnt + tb.Rate * now.Sub(tb.LastToken).Seconds()
-
 	if tb.TokenCnt >= 1 {
 		tb.TokenCnt--
 		tb.LastToken = time.Now()
@@ -34,7 +33,7 @@ func (tb *TokenBucket) Allow() bool {
 func LimitMid(maxConn int64) gin.HandlerFunc {
 	tb := TokenBucket{
 		Capacity: maxConn,
-		Rate: 1.0,
+		Rate: 0.5,
 		TokenCnt: 0,
 		LastToken: time.Now(),
 	}
