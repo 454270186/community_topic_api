@@ -118,7 +118,7 @@ func (p DataRepoDB) DelPost(id int64) (int64, error) {
 func (p DataRepoDB) AddPostLike(id int64) (int64, int64, error) {
 	var curLikeCnt int64
 	var topicId int64
-	err := p.DB.Transaction(func(tx *gorm.DB) error {
+	err := p.DB.Transaction(func(*gorm.DB) error {
 		var post Post
 		err := p.DB.First(&post, id).Error
 		if err != nil {
